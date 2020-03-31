@@ -1,0 +1,13 @@
+bulbs = [
+    ["192.168.0.201", "ceiling4"],
+    ["192.168.0.202", "color"],
+    ["192.168.0.203", "color"],
+]
+currently_playing_url = "https://api.spotify.com/v1/me/player/currently-playing"
+default_color = [255, 100, 220]
+client_id = ""
+client_secret = ""
+refresh_token = ""
+tick_time = 1
+time_interval = 10
+token_url = 'https://accounts.spotify.com/api/token'
