@@ -5,38 +5,43 @@ from sklearn.cluster import KMeans
 import cv2
 import numpy as np
 
-def _filter_rgb_by_diversity(rgb_list, threshold):
-    filtered_rgb_list = []
+def _filter_colors_by_min_diversity(colors, min_diversity):
+    filtered_colors = []
 
-    for rgb in rgb_list:
-        red = int(rgb[0])
-        green = int(rgb[1])
-        blue = int(rgb[2])
+    for color in colors:
+        red = int(color[0])
+        green = int(color[1])
+        blue = int(color[2])
 
-        if abs(red - green) + abs(green - blue) + abs(blue - red) > threshold:
-            filtered_rgb_list.append(rgb)
+        if abs(red - green) + abs(green - blue) + abs(blue - red) > min_diversity:
+            filtered_colors.append(color)
 
-    return filtered_rgb_list
+    return filtered_colors
 
-def get_color_from_album_url(album_url, number_of_colors=4, color_diversity_threshold=100):
-    response = request.urlopen(album_url)
-    image = cv2.imdecode(np.asarray(bytearray(response.read()), dtype="uint8"), cv2.IMREAD_COLOR)
-    rgb_matrix = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).reshape(image.shape[0] * image.shape[1], 3)
-    filtered_rgb_list = _filter_rgb_by_diversity(rgb_matrix, color_diversity_threshold)
+def _get_colors_from_url(url):
+    response = request.urlopen(url)
+    bgr_image = cv2.imdecode(
+        np.asarray(bytearray(response.read()), dtype="uint8"), cv2.IMREAD_COLOR)
+    rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+    return rgb_image.reshape(bgr_image.shape[0] * bgr_image.shape[1], 3)
 
-    if filtered_rgb_list:
-        clf = KMeans(n_clusters=min(len(filtered_rgb_list), number_of_colors))
-        labels = clf.fit_predict(filtered_rgb_list)
-        counts = Counter(labels)
-        center_colors = clf.cluster_centers_
-        best_rgb, best_score = [0, 0, 0], 0
+def _get_dominant_color(colors, n_clusters):
+    clf = KMeans(n_clusters=min(len(colors), n_clusters))
+    counts = Counter(clf.fit_predict(colors))
+    center_colors = clf.cluster_centers_
+    best_color, best_score = None, 0
 
-        for i in range(center_colors.shape[0]):
-            score = counts[i]
-            if score > best_score:
-                best_rgb = center_colors[i]
-                best_score = score
+    for counter in range(center_colors.shape[0]):
+        score = counts[counter]
+        if score > best_score:
+            best_color = center_colors[counter]
+            best_score = score
 
-        return [int(color) for color in best_rgb]
-        
+    return [int(parameter) for parameter in best_color]
+
+def get_color_from_album_url(album_url, n_clusters=4, color_min_diversity=100):
+    colors = _get_colors_from_url(album_url)
+    filtered_colors = _filter_colors_by_min_diversity(colors, color_min_diversity)
+    if filtered_colors:
+        return _get_dominant_color(filtered_colors, n_clusters)
     return []

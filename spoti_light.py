@@ -1,6 +1,5 @@
 import json
 import requests
-import sys
 import time
 import toml
 import yeelight
