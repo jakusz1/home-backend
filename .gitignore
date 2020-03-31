@@ -142,5 +142,7 @@ cython_debug/
 media
 static
 
+# custom
 *.toml
 .vscode
+*.out
