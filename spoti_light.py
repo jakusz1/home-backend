@@ -34,30 +34,23 @@ class SpotiLight:
             try:
                 light = yeelight.LightType.Main if bulb.model == "color" else yeelight.LightType.Ambient
                 getattr(bulb, func_name)(*(fixed_args or []), light_type=light)
-            except yeelight.main.BulbException as error:
-                print(error)
+            except yeelight.main.BulbException:
+                pass
 
     def white_bulbs(self, func_name, *args):
         for bulb in self.online_bulbs_list:
             try:
                 getattr(bulb, func_name)(*(args or []), light_type=yeelight.LightType.Main)
-            except yeelight.main.BulbException as error:
-                print(error)
+            except yeelight.main.BulbException:
+                pass
 
     def bulb(self, bulb_id, is_main_light, func_name, **kwargs):
         light_type = yeelight.LightType.Main if is_main_light else yeelight.LightType.Ambient
-        try:
-            bulb = self.online_bulbs_list[bulb_id]
-            getattr(bulb, func_name)(**(kwargs or {}), light_type=light_type)
-        except Exception as e:
-            return e
+        bulb = self.online_bulbs_list[bulb_id]
+        getattr(bulb, func_name)(**(kwargs or {}), light_type=light_type)
 
     def bulb_info(self, bulb_id):
-        try:
-            bulb = self.online_bulbs_list[bulb_id]
-            return bulb.get_properties()
-        except Exception as e:
-            return e
+        return self.online_bulbs_list[bulb_id].get_properties()
 
     def _spotify(self):
         if not self.access_token or \

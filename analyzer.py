@@ -9,13 +9,9 @@ def _filter_colors_by_min_diversity(colors, min_diversity):
     filtered_colors = []
 
     for color in colors:
-        red = int(color[0])
-        green = int(color[1])
-        blue = int(color[2])
-
+        red, green, blue = (int(param) for param in color)
         if abs(red - green) + abs(green - blue) + abs(blue - red) > min_diversity:
             filtered_colors.append(color)
-
     return filtered_colors
 
 def _get_colors_from_url(url):
@@ -36,8 +32,7 @@ def _get_dominant_color(colors, n_clusters):
         if score > best_score:
             best_color = center_colors[counter]
             best_score = score
-
-    return [int(parameter) for parameter in best_color]
+    return [int(param) for param in best_color]
 
 def get_color_from_album_url(album_url, n_clusters=4, color_min_diversity=100):
     colors = _get_colors_from_url(album_url)
