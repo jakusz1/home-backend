@@ -39,7 +39,7 @@ def spotify(action):
 @app.route('/api/v1/denon/<command>', methods=['POST'])
 def denon(command):
     try:
-        IrDenon.send(command, int(request.json.get('count', '2')))
+        IrDenon.send(command, int(request.json['count']))
         return Response(status=200, mimetype='application/json')
     except Exception as error:
         return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
