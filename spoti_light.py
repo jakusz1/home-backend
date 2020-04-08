@@ -47,7 +47,10 @@ class SpotiLight:
     def bulb(self, bulb_id, is_main_light, func_name, **kwargs):
         light_type = yeelight.LightType.Main if is_main_light else yeelight.LightType.Ambient
         bulb = self.online_bulbs_list[bulb_id]
-        getattr(bulb, func_name)(**(kwargs or {}), light_type=light_type)
+        try:
+            getattr(bulb, func_name)(**(kwargs or {}), light_type=light_type)
+        except yeelight.main.BulbException:
+            pass
 
     def bulb_info(self, bulb_id):
         return self.online_bulbs_list[bulb_id].get_properties()
