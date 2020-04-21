@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/api/v1/bulb/<int:bulb_id>', methods=['GET'])
 def get_bulb(bulb_id):
     try:
-        bulb_data = LightHelper()git bulb_info(bulb_id)
+        bulb_data = LightHelper().bulb_info(bulb_id)
         return Response(json.dumps(bulb_data), status=200, mimetype='application/json')
     except AttributeError as error:
         return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
