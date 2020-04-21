@@ -1,21 +1,16 @@
 import json
-import requests
 import time
-import toml
-import yeelight
 import threading
-from analyzer import get_color_from_album_url
+import toml
+import requests
+import yeelight
 
-def singleton(class_):
-    instances = {}
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
+from analyzer import get_color_from_album_url
+from common import singleton
+
 
 @singleton
-class SpotiLight:
+class LightHelper:
     def __init__(self):
         self.config = toml.load("config.toml")
         self.online_bulbs_list = []
@@ -55,7 +50,7 @@ class SpotiLight:
     def bulb_info(self, bulb_id):
         return self.online_bulbs_list[bulb_id].get_properties()
 
-    def _spotify(self):
+    def _refresh_access_token(self):
         if not self.access_token or \
             time.time() - self.access_token_get_time >= self.response["expires_in"]:
             self.response = json.loads(
@@ -69,21 +64,18 @@ class SpotiLight:
             self.access_token_get_time = time.time()
             self.access_token = self.response["access_token"]
 
+    def _spotify(self, only_on_changed_album=True):
+        self._refresh_access_token()
+
         headers = {'authorization': f'Bearer {self.access_token}'}
         currently_playing_request = requests.request(
             "GET", self.config['currently_playing_url'], headers=headers).content
-        if currently_playing_request:
-            currently_playing = json.loads(currently_playing_request)
-            if currently_playing:
-                currently_played_album = currently_playing['item']['album']
-                if self.previously_played_album['id'] != currently_played_album['id'] and currently_played_album['artists']:
-                    print(f"\n{currently_played_album['artists'][0]['name']} - {currently_played_album['name']}")
-                    best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
-                    if not best_rgb:
-                        best_rgb = self.config['default_color']
-                    self.rgb_bulbs("set_rgb", *best_rgb)
 
-                self.previously_played_album = currently_played_album
+        currently_played_album = json.loads(currently_playing_request)['item']['album']
+        if not only_on_changed_album or self.previously_played_album['id'] != currently_played_album['id']:
+            self.previously_played_album = currently_played_album
+            return get_color_from_album_url(currently_played_album['images'][-1]['url'])
+        raise SpotiLightException()
 
     def _continous_spotify(self):
         time_counter = 0
@@ -95,7 +87,13 @@ class SpotiLight:
             if not self.spotify_thread_running:
                 break
             elif time_counter % self.config['time_interval'] == 0:
-                self._spotify()
+                try:
+                    best_rgb = self._spotify()
+                    if not best_rgb:
+                        best_rgb = self.config['default_color']
+                    self.rgb_bulbs("set_rgb", *best_rgb)
+                except (SpotiLightException, AttributeError):
+                    pass
 
             time.sleep(self.config['tick_time'])
             time_counter += self.config['tick_time']
@@ -117,7 +115,10 @@ class SpotiLight:
 
     def single_spotify(self):
         if not self.spotify_thread_running:
-            self._spotify()
+            best_rgb = self._spotify(only_on_changed_album=False)
+            if not best_rgb:
+                best_rgb = self.config['default_color']
+            return best_rgb
         else:
             raise SpotiLightException("Spotify continous mode is already running")
 

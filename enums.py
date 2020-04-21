@@ -1,8 +1,9 @@
-from enum import Enum, auto
+from enum import Enum, auto, IntEnum
 
 class AutoName(Enum):
     def _generate_next_value_(name, start, count, last_values):
         return name
+
 
 class DenonKey(AutoName):
     MD_TRACK_DOWN = auto()
@@ -41,3 +42,12 @@ class DenonKey(AutoName):
     AMP_AUX = auto()
     AMP_MUTE = auto()
     AMP_POWER = auto()
+
+
+class DenonInput(Enum):
+    AMP_PHONO = DenonKey.AMP_PHONO
+    AMP_TAPE = DenonKey.AMP_TAPE
+    AMP_MD = DenonKey.AMP_MD
+    AMP_CD = DenonKey.AMP_CD
+    AMP_TUNER = DenonKey.AMP_TUNER
+    AMP_AUX = DenonKey.AMP_AUX
