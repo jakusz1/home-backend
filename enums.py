@@ -5,7 +5,7 @@ class AutoName(Enum):
         return name
 
 
-class DenonKey(AutoName):
+class DenonKey(str, AutoName):
     MD_TRACK_DOWN = auto()
     MD_TRACK_UP = auto()
     MD_REV = auto()
@@ -44,10 +44,10 @@ class DenonKey(AutoName):
     AMP_POWER = auto()
 
 
-class DenonInput(Enum):
-    AMP_PHONO = DenonKey.AMP_PHONO
-    AMP_TAPE = DenonKey.AMP_TAPE
-    AMP_MD = DenonKey.AMP_MD
-    AMP_CD = DenonKey.AMP_CD
-    AMP_TUNER = DenonKey.AMP_TUNER
-    AMP_AUX = DenonKey.AMP_AUX
+class DenonInput(str, AutoName):
+    AMP_PHONO = auto()
+    AMP_TAPE = auto()
+    AMP_MD = auto()
+    AMP_CD = auto()
+    AMP_TUNER = auto()
+    AMP_AUX = auto()
