@@ -53,7 +53,7 @@ def get_denon():
 def action_denon(action):
     try:
         IrDenon().send(action, request.json['count'])
-        return Response(status=200, mimetype='application/json')
+        return Response(IrDenon().to_json(), status=200, mimetype='application/json')
     except Exception as error:
         return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
 
