@@ -10,6 +10,10 @@ class IrDenon:
         self.power_status = True
         self.active_input = DenonInput.AMP_CD
 
+    @staticmethod
+    def _emit_command(cmd, count):
+        subprocess.call(["irsend", "send_once", "denon", cmd, "--count", str(count)])
+
     def to_json(self):
         return json.dumps(self.__dict__)
 
@@ -17,9 +21,10 @@ class IrDenon:
         cmd = getattr(DenonKey, command_key.upper()).value
         if cmd == DenonKey.AMP_POWER:
             self.power_status = not self.power_status
-        else:
+            self._emit_command(cmd, count)
+        elif self.power_status:
             try:
                 self.active_input = getattr(DenonInput, cmd)
             except AttributeError:
                 pass
-        subprocess.call(["irsend", "send_once", "denon", cmd, "--count", str(count)])
+            self._emit_command(cmd, count)
