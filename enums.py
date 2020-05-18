@@ -51,3 +51,10 @@ class DenonInput(str, AutoName):
     AMP_CD = auto()
     AMP_TUNER = auto()
     AMP_AUX = auto()
+
+
+class SmartApp(Enum):
+    YOUTUBE = 111299001912
+    HBO_GO = 3201706012478
+    SPOTIFY = 3201606009684
+    NETFLIX = 11101200001

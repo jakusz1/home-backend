@@ -3,11 +3,12 @@ bulbs = [
     ["192.168.0.202", "color"],
     ["192.168.0.203", "color"],
 ]
-currently_playing_url = "https://api.spotify.com/v1/me/player/currently-playing"
 default_color = [255, 100, 220]
 client_id = ""
 client_secret = ""
 refresh_token = ""
-tick_time = 1
-time_interval = 10
+tv_api_url = "http://x.x.x.x:8001/api/v2/applications"
+
+currently_playing_url = "https://api.spotify.com/v1/me/player/currently-playing"
+player_url = "https://api.spotify.com/v1/me/player"
 token_url = 'https://accounts.spotify.com/api/token'

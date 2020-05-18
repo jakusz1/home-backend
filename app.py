@@ -1,8 +1,10 @@
 import json
 
-from ir_denon import IrDenon
 from flask import Flask, request, Response
-from light_helper import LightHelper, SpotiLightException
+from ir_denon import IrDenon
+from light_helper import LightHelper
+from smart_tv import SmartTv
+from spotify_helper import SpotifyHelper, SpotiLightException
 
 
 app = Flask(__name__)
@@ -26,24 +28,13 @@ def action_bulb(bulb_id, light_type, action):
 @app.route('/api/v1/spotify', methods=['GET'])
 def get_spotify():
     try:
-        return Response(f'{{"best_rgb": {str(LightHelper().single_spotify())}}}',
+        return Response(f'{{"best_rgb": {str(SpotifyHelper().get_color_from_currently_played_album())}}}',
                         status=200,
                         mimetype='application/json')
     except (SpotiLightException, AttributeError) as error:
         return Response(f'{{"error_message": "{error}"}}',
                         status=500,
                         mimetype='application/json')
-
-@app.route('/api/v1/spotify/<action>', methods=['POST'])
-def action_spotify(action):
-    try:
-        if action == "start":
-            LightHelper().start_spotify()
-        elif action == "stop":
-            LightHelper().stop_spotify()
-        return Response(status=200, mimetype='application/json')
-    except SpotiLightException as error:
-        return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
 
 @app.route('/api/v1/denon', methods=['GET'])
 def get_denon():
@@ -57,6 +48,18 @@ def action_denon(action):
     except Exception as error:
         return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
 
+@app.route('api/v1/tv', methods=['DELETE'])
+def set_all_smart_tv_apps_off():
+    return SmartTv().set_all_apps_off()
+
+@app.route('api/v1/tv/<app_name>', methods=['GET', 'POST', 'DELETE'])
+def smart_tv_app(app_name):
+    if request.method == 'GET':
+        return SmartTv().get_app_status(app_name)
+    elif request.method == 'POST':
+        return SmartTv().set_app_on(app_name)
+    elif request.method == 'DELETE':
+        return SmartTv().set_app_off(app_name)
 
 if __name__ == '__main__':
     app.run()
