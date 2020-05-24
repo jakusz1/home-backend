@@ -12,11 +12,10 @@ class BtHelper:
 
     @staticmethod
     def set_color(name, saturation, hue):
-        subprocess.Popen(HOMEKIT_COMMAND(name, SATURATION, saturation).split())
-        subprocess.Popen(HOMEKIT_COMMAND(name, HUE, hue).spilt())
+        subprocess.Popen(f"{HOMEKIT_COMMAND(name, SATURATION, saturation)} -c {HUE} {hue}".split())
 
-    @staticmethod
-    def set_ct(name, temperature):
+    @classmethod
+    def set_ct(cls, name, temperature):
         if temperature >= 6000:
             saturation = 0
             hue = 180
@@ -32,4 +31,4 @@ class BtHelper:
         else:
             saturation = 100
             hue = 25
-        self.set_color(name, saturation, hue)
+        cls.set_color(name, saturation, hue)
