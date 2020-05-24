@@ -1,5 +1,6 @@
 import json
 
+from bt_helper import BtHelper
 from flask import Flask, request, Response
 from ir_denon import IrDenon
 from light_helper import LightHelper
@@ -24,6 +25,15 @@ def action_bulb(bulb_id, light_type, action):
         return Response(status=200, mimetype='application/json')
     except AttributeError as error:
         return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
+
+@app.route('/api/v1/bt/<name>/<action>', methods=['POST'])
+def action_bt(name, action):
+    if action in ["on", "off"]:
+        BtHelper.set_power(name, action)
+    elif action == "ct":
+        BtHelper.set_ct(name, request.json['ct'])
+    elif action == "color":
+        BtHelper.set_color(name, request.json['saturation'], request.json['hue'])
 
 @app.route('/api/v1/spotify', methods=['GET'])
 def get_spotify():
