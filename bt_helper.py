@@ -8,12 +8,12 @@ HUE = "1.24"
 class BtHelper:
     @staticmethod
     def set_power(name, status):
-        subprocess.Popen(HOMEKIT_COMMAND(name, POWER, status))
+        subprocess.Popen(HOMEKIT_COMMAND(name, POWER, status).split())
 
     @staticmethod
     def set_color(name, saturation, hue):
-        subprocess.Popen(HOMEKIT_COMMAND(name, SATURATION, saturation))
-        subprocess.Popen(HOMEKIT_COMMAND(name, HUE, hue))
+        subprocess.Popen(HOMEKIT_COMMAND(name, SATURATION, saturation).split())
+        subprocess.Popen(HOMEKIT_COMMAND(name, HUE, hue).spilt())
 
     @staticmethod
     def set_ct(name, temperature):

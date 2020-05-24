@@ -34,6 +34,7 @@ def action_bt(name, action):
         BtHelper.set_ct(name, request.json['ct'])
     elif action == "color":
         BtHelper.set_color(name, request.json['saturation'], request.json['hue'])
+    return Response(status=200, mimetype='application/json')
 
 @app.route('/api/v1/spotify', methods=['GET'])
 def get_spotify():
