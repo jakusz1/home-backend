@@ -6,6 +6,7 @@ from ir_denon import IrDenon
 from light_helper import LightHelper
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
+from traceback import format_exc
 
 
 app = Flask(__name__)
@@ -37,7 +38,7 @@ def action_bt(name, action):
             BtHelper().set_color(name, request.json['saturation'], request.json['hue'])
         return Response(status=200, mimetype='application/json')
     except Exception as error:
-        return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
 
 @app.route('/api/v1/spotify', methods=['GET'])
 def get_spotify():
