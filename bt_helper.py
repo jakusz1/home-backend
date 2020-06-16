@@ -19,7 +19,11 @@ class BtHelper:
         characteristics = [(int(c[0].split('.')[0]),  # the first part is the aid, must be int
                             int(c[0].split('.')[1]),  # the second part is the iid, must be int
                             c[1]) for c in charac]
-        results = pairing.put_characteristics(characteristics, do_conversion=True)
+        try:
+            pairing.put_characteristics(characteristics, do_conversion=True)
+        except AccessoryDisconnectedError:
+            pairing.put_characteristics(characteristics, do_conversion=True)
+
 
     def set_power(self, name, status):
         self._set(name, [(POWER, status)])
