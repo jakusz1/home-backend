@@ -24,6 +24,9 @@ class BtHelper:
             pairing.put_characteristics(characteristics, do_conversion=True)
         except AccessoryDisconnectedError:
             pairing.put_characteristics(characteristics, do_conversion=True)
+        except Exception:
+            self.__init__()
+            self.controller.get_pairings()[alias].put_characteristics(characteristics, do_conversion=True)
 
 
     def set_power(self, name, status):
