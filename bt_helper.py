@@ -1,6 +1,7 @@
 import subprocess
 
 from homekit.controller import Controller
+from homekit.exceptions import AccessoryDisconnectedError
 from common import singleton
 
 POWER = "1.15"
