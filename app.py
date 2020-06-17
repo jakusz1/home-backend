@@ -31,11 +31,11 @@ def action_bulb(bulb_id, light_type, action):
 def action_bt(name, action):
     try:
         if action in ["on", "off"]:
-            BtHelper().set_power(name, action)
+            BtHelper.set_power(name, action)
         elif action == "ct":
-            BtHelper().set_ct(name, request.json['ct'])
+            BtHelper.set_ct(name, request.json['ct'])
         elif action == "color":
-            BtHelper().set_color(name, request.json['saturation'], request.json['hue'])
+            BtHelper.set_color(name, request.json['saturation'], request.json['hue'])
         return Response(status=200, mimetype='application/json')
     except Exception as error:
         return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')

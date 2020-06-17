@@ -1,41 +1,21 @@
 import subprocess
 
-from homekit.controller import Controller
-from homekit.exceptions import AccessoryDisconnectedError
-from common import singleton
-
+HOMEKIT_COMMAND = "python3 -m homekit.put_characteristic -f /home/pi/controller.json -a {} -c {} {}".format
 POWER = "1.15"
 SATURATION = "1.25"
 HUE = "1.24"
 
-@singleton
 class BtHelper:
-    def __init__(self):
-        self.controller = Controller('hci0')
-        self.controller.load_data('/home/pi/controller.json')
+    @staticmethod
+    def set_power(name, status):
+        subprocess.Popen(HOMEKIT_COMMAND(name, POWER, status).split()).wait()
 
-    def _set(self, alias, charac):
-        pairing = self.controller.get_pairings()[alias]
+    @staticmethod
+    def set_color(name, saturation, hue):
+        subprocess.Popen(f"{HOMEKIT_COMMAND(name, SATURATION, saturation)} -c {HUE} {hue}".split()).wait()
 
-        characteristics = [(int(c[0].split('.')[0]),  # the first part is the aid, must be int
-                            int(c[0].split('.')[1]),  # the second part is the iid, must be int
-                            c[1]) for c in charac]
-        try:
-            pairing.put_characteristics(characteristics, do_conversion=True)
-        except AccessoryDisconnectedError:
-            pairing.put_characteristics(characteristics, do_conversion=True)
-        except Exception:
-            self.__init__()
-            self.controller.get_pairings()[alias].put_characteristics(characteristics, do_conversion=True)
-
-
-    def set_power(self, name, status):
-        self._set(name, [(POWER, status)])
-
-    def set_color(self, name, saturation, hue):
-        self._set(name, [(SATURATION, saturation), (HUE, hue)])
-
-    def set_ct(self, name, temperature):
+    @classmethod
+    def set_ct(cls, name, temperature):
         if temperature >= 6000:
             saturation = 0
             hue = 180
@@ -51,4 +31,4 @@ class BtHelper:
         else:
             saturation = 100
             hue = 25
-        self.set_color(name, saturation, hue)
+        cls.set_color(name, saturation, hue)
