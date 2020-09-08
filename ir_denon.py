@@ -1,14 +1,17 @@
 import json
 import subprocess
+import threading
 
 from enums import DenonKey, DenonInput
 from common import singleton
+from animations import runRainbow
 
 @singleton
 class IrDenon:
     def __init__(self):
         self.power_status = True
         self.active_input = DenonInput.AMP_CD
+        self.thread = threading.Thread(target=runRainbow, args=(self.power_status,))
 
     @staticmethod
     def _emit_command(cmd, count):
