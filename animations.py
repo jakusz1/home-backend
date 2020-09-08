@@ -42,14 +42,14 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
         time.sleep(wait_ms/1000.0)
 
 # Main program logic follows:
-def runRainbow(condition):
+def runRainbow(power_status):
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
     strip.begin()
     while True:
-        if condition.power_status:
-            while condition.power_status:
+        if power_status.powered:
+            while power_status.powered:
                 rainbowCycle(strip)
             colorWipe(strip, Color(0,0,0), 10)
         time.sleep(1)
