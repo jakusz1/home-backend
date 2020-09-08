@@ -18,8 +18,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color)
-    strip.setPixelColor(0, Color(10,0,0))
+        strip.setPixelColor(i, color if i%2==0 else Color(15,0,0))
     strip.show()
 
 def wheel(pos):
@@ -33,13 +32,15 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
-def rainbowCycle(strip, wait_ms=20, iterations=2):
+def rainbowCycle(strip, power_status, wait_ms=20, iterations=2):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int((i%8 + int(i/8)) * 128 / strip.numPixels()) + j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
+        if not power_status.power:
+            break
 
 # Main program logic follows:
 def runRainbow(power_status):
@@ -49,7 +50,6 @@ def runRainbow(power_status):
     strip.begin()
     while True:
         if power_status.powered:
-            while power_status.powered:
-                rainbowCycle(strip)
+            rainbowCycle(strip, power_status)
             colorWipe(strip, Color(0,0,0), 10)
         time.sleep(1)
