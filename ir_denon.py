@@ -18,7 +18,7 @@ class IrDenon:
         subprocess.call(["irsend", "send_once", "denon", cmd, "--count", str(count)])
 
     def to_json(self):
-        return json.dumps(self.__dict__)
+        return json.dumps({'power_status': self.power_status, 'active_input': self.active_input})
 
     def send(self, command_key, count):
         cmd = getattr(DenonKey, command_key.upper()).value
