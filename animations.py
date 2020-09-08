@@ -39,7 +39,7 @@ def rainbowCycle(strip, power_status, wait_ms=20, iterations=2):
             strip.setPixelColor(i, wheel((int((i%8 + int(i/8)) * 128 / strip.numPixels()) + j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
-        if not power_status.power:
+        if not power_status.powered:
             break
 
 # Main program logic follows:
