@@ -48,8 +48,8 @@ def runRainbow(condition):
     # Intialize the library (must be called once before other functions).
     strip.begin()
     while True:
-        if condition:
-            while condition:
+        if condition.power_status:
+            while condition.power_status:
                 rainbowCycle(strip)
             colorWipe(strip, Color(0,0,0), 10)
         time.sleep(1)

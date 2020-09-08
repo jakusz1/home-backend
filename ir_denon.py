@@ -11,7 +11,7 @@ class IrDenon:
     def __init__(self):
         self.power_status = True
         self.active_input = DenonInput.AMP_CD
-        self.thread = threading.Thread(target=runRainbow, args=(self.power_status,))
+        self.thread = threading.Thread(target=runRainbow, args=(self,))
         self.thread.start()
 
     @staticmethod
