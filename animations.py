@@ -9,7 +9,7 @@ LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
-LED_BRIGHTNESS = 50     # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 40     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
@@ -18,7 +18,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color if i%2==0 else Color(15,0,0))
+        strip.setPixelColor(i, color if i+int(i/8)%2 == 0 else Color(15,0,0))
     strip.show()
 
 def wheel(pos):
@@ -32,11 +32,11 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
-def rainbowCycle(strip, power_status, wait_ms=20, iterations=2):
+def rainbowCycle(strip, power_status, wait_ms=20):
     """Draw rainbow that uniformly distributes itself across all pixels."""
-    for j in range(256*iterations):
+    for j in range(256*2):
         for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((int((i%8 + int(i/8)) * 128 / strip.numPixels()) + j) & 255))
+            strip.setPixelColor(i, wheel((int((i%8 + int(i/8)) * (256/2) / strip.numPixels()) + j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
         if not power_status.powered:
@@ -50,6 +50,7 @@ def runRainbow(power_status):
     strip.begin()
     while True:
         if power_status.powered:
-            rainbowCycle(strip, power_status)
+            while power_status.powered:
+                rainbowCycle(strip, power_status)
             colorWipe(strip, Color(0,0,0), 10)
         time.sleep(1)
