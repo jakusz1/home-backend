@@ -1,10 +1,12 @@
 import json
 
+from bt_helper import BtHelper
 from flask import Flask, request, Response
 from ir_denon import IrDenon
 from light_helper import LightHelper
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
+from traceback import format_exc
 
 
 app = Flask(__name__)
@@ -15,7 +17,7 @@ def get_bulb(bulb_id):
         bulb_data = LightHelper().bulb_info(bulb_id)
         return Response(json.dumps(bulb_data), status=200, mimetype='application/json')
     except AttributeError as error:
-        return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
 
 @app.route('/api/v1/bulb/<int:bulb_id>/<int:light_type>/<action>', methods=['POST'])
 def action_bulb(bulb_id, light_type, action):
@@ -23,7 +25,20 @@ def action_bulb(bulb_id, light_type, action):
         LightHelper().bulb(bulb_id, light_type, action, **(request.json or {}))
         return Response(status=200, mimetype='application/json')
     except AttributeError as error:
-        return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
+
+@app.route('/api/v1/bt/<name>/<action>', methods=['POST'])
+def action_bt(name, action):
+    try:
+        if action in ["on", "off"]:
+            BtHelper.set_power(name, action)
+        elif action == "ct":
+            BtHelper.set_ct(name, request.json['ct'])
+        elif action == "color":
+            BtHelper.set_color(name, request.json['saturation'], request.json['hue'])
+        return Response(status=200, mimetype='application/json')
+    except Exception as error:
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
 
 @app.route('/api/v1/spotify', methods=['GET'])
 def get_spotify():
@@ -32,9 +47,8 @@ def get_spotify():
                         status=200,
                         mimetype='application/json')
     except (SpotiLightException, AttributeError) as error:
-        return Response(f'{{"error_message": "{error}"}}',
-                        status=500,
-                        mimetype='application/json')
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
+
 
 @app.route('/api/v1/denon', methods=['GET'])
 def get_denon():
@@ -46,7 +60,7 @@ def action_denon(action):
         IrDenon().send(action, request.json['count'])
         return Response(IrDenon().to_json(), status=200, mimetype='application/json')
     except Exception as error:
-        return Response(f'{{"error_message": "{error}"}}', status=500, mimetype='application/json')
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
 
 @app.route('/api/v1/tv', methods=['DELETE'])
 def set_all_smart_tv_apps_off():
