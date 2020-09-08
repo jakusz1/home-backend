@@ -11,7 +11,7 @@ class PowerStatus:
         self.powered = True
 
     def switch(self):
-        self.powered = False
+        self.powered = not self.powered
 
 @singleton
 class IrDenon:
