@@ -18,7 +18,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color if (i+int(i/8))%2 == 0 else Color(20,0,0))
+        strip.setPixelColor(i, color if (i+int(i/8))%2 == 0 else Color(40,0,0))
     strip.show()
 
 def wheel(pos):
