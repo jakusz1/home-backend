@@ -69,15 +69,6 @@ def set_tv():
     elif request.method == 'DELETE':
         return SmartTv().set_all_apps_off()
 
-@app.route('/api/v1/tv', methods=['POST'])
-def set_tv_power():
-    if request.method == 'GET':
-        return SmartTv().get_app_status(app_name)
-    elif request.method == 'POST':
-        return SmartTv().set_app_on(app_name)
-    elif request.method == 'DELETE':
-        return SmartTv().set_app_off(app_name)
-
 @app.route('/api/v1/tv/<app_name>', methods=['GET', 'POST', 'DELETE'])
 def smart_tv_app(app_name):
     if request.method == 'GET':
