@@ -62,9 +62,21 @@ def action_denon(action):
     except Exception as error:
         return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500, mimetype='application/json')
 
-@app.route('/api/v1/tv', methods=['DELETE'])
-def set_all_smart_tv_apps_off():
-    return SmartTv().set_all_apps_off()
+@app.route('/api/v1/tv', methods=['POST','DELETE'])
+def set_tv():
+    if request.method == 'POST':
+        return 
+    elif request.method == 'DELETE':
+        return SmartTv().set_all_apps_off()
+
+@app.route('/api/v1/tv', methods=['POST'])
+def set_tv_power():
+    if request.method == 'GET':
+        return SmartTv().get_app_status(app_name)
+    elif request.method == 'POST':
+        return SmartTv().set_app_on(app_name)
+    elif request.method == 'DELETE':
+        return SmartTv().set_app_off(app_name)
 
 @app.route('/api/v1/tv/<app_name>', methods=['GET', 'POST', 'DELETE'])
 def smart_tv_app(app_name):
