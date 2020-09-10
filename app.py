@@ -1,14 +1,16 @@
+import asyncio
 import json
 
 from bt_helper import BtHelper
 from flask import Flask, request, Response
 from ir_denon import IrDenon
 from light_helper import LightHelper
+from smart_things import waiter
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
 from traceback import format_exc
 
-
+loop = asyncio.get_event_loop()
 app = Flask(__name__)
 
 @app.route('/api/v1/bulb/<int:bulb_id>', methods=['GET'])
@@ -65,7 +67,11 @@ def action_denon(action):
 @app.route('/api/v1/tv', methods=['POST', 'DELETE'])
 def set_tv():
     if request.method == 'POST':
-        return SmartTv().switch_power()
+        tv = SmartTv()
+        tv.refresh_power()
+        loop.run_until_complete(waiter(tv.api_key, tv.device_id, not tv.tv_power))
+        tv.refresh_power()
+        return Response(f'{{"state": "{tv.tv_power}"}}', status=200, mimetype='application/json')
     elif request.method == 'DELETE':
         return SmartTv().set_all_apps_off()
 

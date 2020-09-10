@@ -52,18 +52,18 @@ class SmartTv:
     def refresh_power(self):
         self.tv_power = self._get_power()
 
-    def switch_power(self):
-        self.refresh_power()
-        self.set_power(not self.tv_power)
-        self.refresh_power()
-        return Response(f'{{"state": "{self.tv_power}"}}', status=200, mimetype='application/json')
+    # def switch_power(self):
+    #     self.refresh_power()
+    #     self.set_power(not self.tv_power)
+    #     self.refresh_power()
+    #     return Response(f'{{"state": "{self.tv_power}"}}', status=200, mimetype='application/json')
 
-    def switch_on(self):
-        self.set_power(True)
+    # def switch_on(self):
+    #     self.set_power(True)
 
-    def switch_off(self):
-        self.set_power(False)
+    # def switch_off(self):
+    #     self.set_power(False)
 
-    def set_power(self, state):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(waiter(self.api_key, self.device_id, state))
+    # def set_power(self, state):
+    #     loop = asyncio.get_event_loop()
+    #     loop.run_until_complete(waiter(self.api_key, self.device_id, state))
