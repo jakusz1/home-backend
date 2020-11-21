@@ -14,5 +14,6 @@ async def run(api_key, device_id, set_power):
         else:
             await device.switch_off()
 
+
 async def waiter(api_key, device_id, set_power):
     await run(api_key, device_id, set_power)

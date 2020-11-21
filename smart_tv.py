@@ -1,12 +1,8 @@
-import asyncio
-import json
 import requests
 import toml
 
-from flask import Response
 from common import singleton
 from enums import SmartApp
-from smart_things import waiter
 
 
 @singleton
@@ -16,7 +12,9 @@ class SmartTv:
         self.api_url = config['tv_api_url']
         self.api_key = config['tv_api_key']
         self.device_id = config['tv_device_id']
-        self.tv_power = self._get_power()
+        self.tv_power = False
+        self.visible_app = None
+        self.update()
 
     def _get_app_status_by_id(self, app_id):
         return requests.request("GET", f"{self.api_url}/{app_id}")
@@ -30,6 +28,7 @@ class SmartTv:
 
     def set_app_on(self, app_name):
         app_id = SmartApp[app_name.upper()].value
+        self.visible_app = SmartApp[app_name.upper()]
         return requests.request("POST", f"{self.api_url}/{app_id}")
 
     def set_app_off(self, app_name):
@@ -41,29 +40,27 @@ class SmartTv:
         for app in SmartApp:
             if self._set_app_off_by_id(app.value).status_code != 200:
                 status_code = 500
-        return Response(status=status_code, mimetype='application/json')
+        if status_code == 200:
+            self.visible_app = None
+        return status_code
 
     def _get_power(self):
         resp = requests.get(
-            f"https://api.smartthings.com/v1/devices/{self.device_id}/states", 
+            f"https://api.smartthings.com/v1/devices/{self.device_id}/states",
             headers={"Authorization": f"Bearer {self.api_key}"})
         return resp.json()["main"]["switch"]["value"] == "on"
 
-    def refresh_power(self):
+    def update(self):
         self.tv_power = self._get_power()
+        v_app = None
+        if self.tv_power:
+            for app in SmartApp:
+                if self._get_app_status_by_id(app.value).json()["visible"]:
+                    v_app = app
+        self.visible_app = v_app
 
-    # def switch_power(self):
-    #     self.refresh_power()
-    #     self.set_power(not self.tv_power)
-    #     self.refresh_power()
-    #     return Response(f'{{"state": "{self.tv_power}"}}', status=200, mimetype='application/json')
-
-    # def switch_on(self):
-    #     self.set_power(True)
-
-    # def switch_off(self):
-    #     self.set_power(False)
-
-    # def set_power(self, state):
-    #     loop = asyncio.get_event_loop()
-    #     loop.run_until_complete(waiter(self.api_key, self.device_id, state))
+    def get_info(self):
+        return {
+            "power": self.tv_power,
+            "visible_app": self.visible_app.name.lower() if self.visible_app else None
+        }

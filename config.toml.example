@@ -14,3 +14,13 @@ tv_device_id = ""
 currently_playing_url = "https://api.spotify.com/v1/me/player/currently-playing"
 player_url = "https://api.spotify.com/v1/me/player"
 token_url = 'https://accounts.spotify.com/api/token'
+
+[[light]]
+name = ''
+type = 'yee'
+device_data = { 'ip' = '', 'model' = '' }
+
+[[light]]
+name = ''
+type = 'tuya'
+device_data = { 'protocol' = '3.3', 'deviceid' = '', 'localkey' = '', 'ip' = '' }

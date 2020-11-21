@@ -1,5 +1,6 @@
 from enum import Enum, auto, IntEnum
 
+
 class AutoName(Enum):
     def _generate_next_value_(name, start, count, last_values):
         return name
@@ -54,7 +55,8 @@ class DenonInput(str, AutoName):
 
 
 class SmartApp(Enum):
-    YOUTUBE = 111299001912
-    HBO_GO = 3201706012478
-    SPOTIFY = 3201606009684
-    NETFLIX = 11101200001
+    YOUTUBE = "111299001912"
+    HBO_GO = "3201706012478"
+    SPOTIFY = "3201606009684"
+    NETFLIX = "11101200001"
+    TWITCH = "2ulZzjRf8f.SmartTV"

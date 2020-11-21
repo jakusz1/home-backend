@@ -24,14 +24,14 @@ class SpotifyHelper:
 
     def _refresh_access_token(self):
         if not self.access_token or \
-            time.time() - self.access_token_get_time >= self.response["expires_in"]:
+                time.time() - self.access_token_get_time >= self.response["expires_in"]:
             self.response = json.loads(
                 requests.post(
                     self.config['token_url'],
                     data={
                         'grant_type': 'refresh_token',
                         'refresh_token': self.config['refresh_token']
-                        },
+                    },
                     auth=(self.config['client_id'], self.config['client_secret'])).content)
             self.access_token_get_time = time.time()
             self.access_token = self.response["access_token"]
@@ -51,7 +51,9 @@ class SpotifyHelper:
     def _refresh_devices(self):
         self._refresh_access_token()
 
-        self.online_devices = json.loads(requests.request("GET", f"{self.config['player_url']}/devices", headers=self._get_header()).content)['devices']
+        self.online_devices = \
+        json.loads(requests.request("GET", f"{self.config['player_url']}/devices", headers=self._get_header()).content)[
+            'devices']
 
     def _get_device_id_by_name(self, name):
         for device in self.online_devices:
@@ -70,9 +72,10 @@ class SpotifyHelper:
         else:
             self._refresh_access_token()
 
-        response = requests.request(method, url, json={"context_uri": context_uri} if context_uri else {}, headers=self._get_header())
+        response = requests.request(method, url, json={"context_uri": context_uri} if context_uri else {},
+                                    headers=self._get_header())
         return response
-    
+
     def get_currently_playing(self):
         return self._call_player_api("GET", self.config['currently_playing_url'])
 
