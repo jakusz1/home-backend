@@ -60,6 +60,7 @@ class SmartTv:
         self.visible_app = v_app
 
     def get_info(self):
+        self.tv_power = self._get_power()
         return {
             "power": self.tv_power,
             "visible_app": self.visible_app.name.lower() if self.visible_app else None
