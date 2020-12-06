@@ -46,12 +46,12 @@ def set_tv(action):
     if action == 'switch':
         tv.update()
         loop.run_until_complete(smart_things.waiter(tv.api_key, tv.device_id, not tv.tv_power))
-        tv.tv_power = not tv.tv_power
+        asyncio.sleep(5)
         tv.update()
         return Response(json.dumps(tv.get_info()), status=200, mimetype='application/json')
     elif action == 'on':
         loop.run_until_complete(smart_things.waiter(tv.api_key, tv.device_id, True))
-        tv.tv_power = True
+        asyncio.sleep(5)
         tv.update()
         return Response(json.dumps(tv.get_info()), status=200, mimetype='application/json')
     elif action == 'off':

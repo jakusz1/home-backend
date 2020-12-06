@@ -28,4 +28,5 @@ class LightRepository:
         for light in self.lights.values():
             if light.power_mode != state:
                 light.set_power(state)
+                light.set_second_power(state)
         return self.get_info()
