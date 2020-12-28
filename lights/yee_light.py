@@ -9,7 +9,7 @@ class YeeLight(Light):
         super().__init__()
         self.device_data = device_data
         self.bulb = yeelight.Bulb(device_data['ip'], model=device_data['model'])
-        if self.bulb.model == "ceiling4":
+        if device_data['model'] == "ceiling4":
             self.second_light = Light()
         self.update()
 
