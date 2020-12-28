@@ -18,7 +18,7 @@ app = Flask(__name__,
 
 @app.route('/', methods=['GET'])
 def get_frontend():
-    return send_file("index.html")
+    return send_file("web/index.html")
 
 
 @app.route('/api/v2/spotify', methods=['GET'])
