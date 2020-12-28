@@ -9,16 +9,14 @@ class YeeLight(Light):
         super().__init__()
         self.device_data = device_data
         self.bulb = yeelight.Bulb(device_data['ip'], model=device_data['model'])
-        if device_data['model'] == "ceiling4":
+        if self.bulb.model == "ceiling4":
             self.second_light = Light()
         self.update()
 
     def set_rgb_and_brightness(self, r, g, b, br):
-        if self.bulb.model != "color":
-            pass
-
-        self.bulb.set_rgb(r, g, b, light_type=yeelight.LightType.Main)
-        self.bulb.set_brightness(br, light_type=yeelight.LightType.Main)
+        if self.bulb.model == "color":
+            self.bulb.set_rgb(r, g, b, light_type=yeelight.LightType.Main)
+            self.bulb.set_brightness(br, light_type=yeelight.LightType.Main)
 
         return self.update()
 
@@ -58,26 +56,19 @@ class YeeLight(Light):
         return (rgb_int >> 16) & 255, (rgb_int >> 8) & 255, rgb_int & 255
 
     def set_second_rgb_and_brightness(self, r, g, b, br):
-        if not self.second_light:
-            pass
-
-        self.bulb.set_rgb(r, g, b, light_type=yeelight.LightType.Ambient)
-        self.bulb.set_brightness(br, light_type=yeelight.LightType.Ambient)
+        if self.second_light:
+            self.bulb.set_rgb(r, g, b, light_type=yeelight.LightType.Ambient)
+            self.bulb.set_brightness(br, light_type=yeelight.LightType.Ambient)
 
         return self.update()
 
     def switch_second_power(self):
-        if not self.second_light:
-            pass
-
         return self.set_second_power(not self.second_light.power_mode)
 
     def set_second_power(self, state):
-        if not self.second_light:
-            pass
-
-        if state:
-            self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
-        else:
-            self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
+        if self.second_light:
+            if state:
+                self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
+            else:
+                self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
         return self.update()
