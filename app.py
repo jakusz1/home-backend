@@ -2,7 +2,7 @@ import asyncio
 import json
 from traceback import format_exc
 
-from flask import Flask, request, Response
+from flask import Flask, request, Response, redirect, url_for
 
 import smart_things
 from ir_denon import IrDenon
@@ -12,6 +12,11 @@ from spotify_helper import SpotifyHelper, SpotiLightException
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__)
+
+
+@app.route('/', methods=['GET'])
+def get_frontend():
+    return redirect(url_for('web', filename='index.html'))
 
 
 @app.route('/api/v2/spotify', methods=['GET'])

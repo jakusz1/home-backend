@@ -146,3 +146,6 @@ static
 *.toml
 .vscode
 *.out
+
+# frontend
+web
