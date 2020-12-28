@@ -26,6 +26,15 @@ class Light:
     def update(self):
         pass
 
+    def set_second_power(self, state):
+        pass
+
+    def set_second_rgb_and_brightness(self, r, g, b, br):
+        pass
+
+    def switch_second_power(self):
+        pass
+
     def get_info(self):
         return {
             'red': self.red,
