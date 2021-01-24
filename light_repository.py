@@ -29,9 +29,12 @@ class LightRepository:
         proc = []
         for light in self.lights.values():
             if light.power_mode != state:
-                p = Process(target=light.set_all_power, args=(state,))
-                p.start()
-                proc.append(p)
+                if isinstance(light, YeeLight):
+                    p = Process(target=light.set_all_power, args=(state,))
+                    p.start()
+                    proc.append(p)
+                else:
+                    light.set_power(state)
         for p in proc:
             p.join()
         return self.get_info()
