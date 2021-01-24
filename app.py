@@ -124,6 +124,15 @@ def action_light(light_name, action):
     except Exception as error:
         return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500,
                         mimetype='application/json')
+    
+
+@app.route('/api/v2/scene/<scene>', methods=['POST'])
+def set_scene(scene):
+    try:
+        LightRepository().set_scene(scene)
+    except Exception as error:
+        return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500,
+                        mimetype='application/json')
 
 
 @app.route('/api/v2/lights', methods=['GET', 'POST', 'DELETE'])

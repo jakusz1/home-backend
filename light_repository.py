@@ -42,3 +42,25 @@ class LightRepository:
                 if isinstance(light, YeeLight):
                     light.update()
         return self.get_info()
+
+    def set_scene(self, scene_name):
+        scene = toml.load(f"scenes/{scene_name}.toml")
+        for light_name, light in self.lights.items():
+            light_data = scene.get(light_name)
+            light.set_power(light_data.get("power_mode"))
+            if light_data.get("power_mode"):
+                if light_data.get("color_mode"):
+                    light.set_rgb_and_brightness(light_data.get("red"),
+                                                 light_data.get("green"),
+                                                 light_data.get("blue"),
+                                                 light_data.get("brightness"))
+                else:
+                    light.set_ct_and_brightness(light_data.get("ct"), light_data.get("brightness"))
+            if light.second_light:
+                second_light_data = light_data.get("second_light")
+                light.second_light.set_second_power(second_light_data.get("power_mode"))
+                if second_light_data.get("power_mode"):
+                    light.second_light.set_second_rgb_and_brightness(second_light_data.get("red"),
+                                                                     second_light_data.get("green"),
+                                                                     second_light_data.get("blue"),
+                                                                     second_light_data.get("brightness"))
