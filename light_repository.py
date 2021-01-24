@@ -58,9 +58,9 @@ class LightRepository:
                     light.set_ct_and_brightness(light_data.get("ct"), light_data.get("brightness"))
             if light.second_light:
                 second_light_data = light_data.get("second_light")
-                light.second_light.set_second_power(second_light_data.get("power_mode"))
+                light.set_second_power(second_light_data.get("power_mode"))
                 if second_light_data.get("power_mode"):
-                    light.second_light.set_second_rgb_and_brightness(second_light_data.get("red"),
+                    light.set_second_rgb_and_brightness(second_light_data.get("red"),
                                                                      second_light_data.get("green"),
                                                                      second_light_data.get("blue"),
                                                                      second_light_data.get("brightness"))
