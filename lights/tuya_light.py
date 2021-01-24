@@ -70,3 +70,6 @@ class TuyaLight(Light):
     @staticmethod
     def tuya_ct_to_ct(tuya_ct):
         return int(tuya_ct / 1000 * (6500 - 1700) + 1700)
+
+    def set_all_power(self, state):
+        return self.set_power(state)

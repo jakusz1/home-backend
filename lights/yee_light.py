@@ -72,3 +72,15 @@ class YeeLight(Light):
             else:
                 self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
         return self.update()
+
+    def set_all_power(self, state):
+        if state:
+            self.bulb.turn_on(light_type=yeelight.LightType.Main)
+        else:
+            self.bulb.turn_off(light_type=yeelight.LightType.Main)
+        if self.second_light:
+            if state:
+                self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
+            else:
+                self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
+        return self.update()

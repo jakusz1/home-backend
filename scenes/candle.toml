@@ -1,0 +1,33 @@
+[table]
+power_mode = false
+
+  [table.second_light]
+  red = 255
+  green = 86
+  blue = 0
+  brightness = 100
+  color_mode = true
+  power_mode = true
+
+[desk]
+brightness = 100
+ct = 1700
+color_mode = false
+power_mode = true
+
+[couch]
+brightness = 100
+ct = 1700
+color_mode = false
+power_mode = true
+
+[bed]
+power_mode = false
+
+[kitchen]
+red = 255
+green = 123
+blue = 0
+brightness = 100
+color_mode = true
+power_mode = true

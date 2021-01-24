@@ -29,6 +29,9 @@ class Light:
     def set_second_power(self, state):
         pass
 
+    def set_all_power(self, state):
+        pass
+
     def set_second_rgb_and_brightness(self, r, g, b, br):
         pass
 

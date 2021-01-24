@@ -1,0 +1,13 @@
+asyncio
+Flask
+numpy
+opencv-python
+pysmartthings
+requests
+rpi-ws281x
+scikit-learn
+scipy
+tlv8
+toml
+tuyaface
+yeelight
