@@ -1,0 +1,29 @@
+[table]
+brightness = 50
+ct = 5800
+color_mode = false
+power_mode = true
+
+  [table.second_light]
+  power_mode = false
+
+[desk]
+brightness = 100
+ct = 6500
+color_mode = false
+power_mode = true
+
+[couch]
+brightness = 100
+ct = 6500
+color_mode = false
+power_mode = true
+
+[bed]
+power_mode = false
+
+[kitchen]
+brightness = 100
+ct = 6000
+color_mode = false
+power_mode = true
