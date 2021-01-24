@@ -37,4 +37,8 @@ class LightRepository:
                     light.set_power(state)
         for p in proc:
             p.join()
+        for light in self.lights.values():
+            if light.power_mode != state:
+                if isinstance(light, YeeLight):
+                    light.update()
         return self.get_info()
