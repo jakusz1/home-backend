@@ -1,6 +1,6 @@
 [table]
-brightness = 100
-ct = 4800
+brightness = 50
+ct = 5800
 color_mode = false
 power_mode = true
 
@@ -9,24 +9,24 @@ power_mode = true
 
 [desk]
 brightness = 100
-ct = 4800
+ct = 6500
 color_mode = false
 power_mode = true
 
 [couch]
 brightness = 100
-ct = 4800
+ct = 6500
 color_mode = false
 power_mode = true
 
 [bed]
 brightness = 100
-ct = 4800
+ct = 6500
 color_mode = false
 power_mode = true
 
 [kitchen]
 brightness = 100
-ct = 5500
+ct = 6000
 color_mode = false
 power_mode = true

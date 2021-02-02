@@ -22,7 +22,10 @@ color_mode = false
 power_mode = true
 
 [bed]
-power_mode = false
+brightness = 100
+ct = 1700
+color_mode = false
+power_mode = true
 
 [kitchen]
 red = 255
