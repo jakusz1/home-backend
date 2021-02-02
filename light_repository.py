@@ -1,11 +1,11 @@
-import json
-
 import toml
-from multiprocessing import Process
+
+import yeelight
 
 from common import singleton
 from lights.tuya_light import TuyaLight
 from lights.yee_light import YeeLight
+from process import Process
 
 
 @singleton
@@ -30,17 +30,22 @@ class LightRepository:
         for light in self.lights.values():
             if light.power_mode != state:
                 if isinstance(light, YeeLight):
-                    p = Process(target=light.set_all_power, args=(state,))
+                    p = Process(target=light.set_all_power_with_retry, args=(state,))
                     p.start()
                     proc.append(p)
-                else:
+        for light in self.lights.values():
+            if light.power_mode != state:
+                if isinstance(light, TuyaLight):
                     light.set_power(state)
         for p in proc:
             p.join()
         for light in self.lights.values():
             if light.power_mode != state:
                 if isinstance(light, YeeLight):
-                    light.update()
+                    try:
+                        light.update()
+                    except yeelight.BulbException:
+                        pass
         return self.get_info()
 
     def set_scene(self, scene_name):
@@ -61,6 +66,6 @@ class LightRepository:
                 light.set_second_power(second_light_data.get("power_mode"))
                 if second_light_data.get("power_mode"):
                     light.set_second_rgb_and_brightness(second_light_data.get("red"),
-                                                                     second_light_data.get("green"),
-                                                                     second_light_data.get("blue"),
-                                                                     second_light_data.get("brightness"))
+                                                        second_light_data.get("green"),
+                                                        second_light_data.get("blue"),
+                                                        second_light_data.get("brightness"))

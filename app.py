@@ -1,5 +1,6 @@
 import asyncio
 import json
+from time import sleep
 from traceback import format_exc
 
 from flask import Flask, request, Response, redirect, url_for, send_from_directory, send_file
@@ -53,12 +54,12 @@ def set_tv(action):
     if action == 'switch':
         tv.update()
         loop.run_until_complete(smart_things.waiter(tv.api_key, tv.device_id, not tv.tv_power))
-        asyncio.sleep(5)
+        sleep(5)
         tv.update()
         return Response(json.dumps(tv.get_info()), status=200, mimetype='application/json')
     elif action == 'on':
         loop.run_until_complete(smart_things.waiter(tv.api_key, tv.device_id, True))
-        asyncio.sleep(5)
+        sleep(5)
         tv.update()
         return Response(json.dumps(tv.get_info()), status=200, mimetype='application/json')
     elif action == 'off':

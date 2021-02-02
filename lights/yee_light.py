@@ -76,19 +76,19 @@ class YeeLight(Light):
         return self.update()
 
     def set_all_power(self, state):
-        try:
+        if state:
+            self.bulb.turn_on(light_type=yeelight.LightType.Main)
+        else:
+            self.bulb.turn_off(light_type=yeelight.LightType.Main)
+        if self.second_light:
             if state:
-                self.bulb.turn_on(light_type=yeelight.LightType.Main)
+                self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
             else:
-                self.bulb.turn_off(light_type=yeelight.LightType.Main)
-            if self.second_light:
-                if state:
-                    self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
-                else:
-                    self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
+                self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
+
+    def set_all_power_with_retry(self, state):
+        try:
+            self.set_all_power(state)
         except yeelight.BulbException:
             sleep(1)
-            if state:
-                self.bulb.turn_on(light_type=yeelight.LightType.Main)
-            else:
-                self.bulb.turn_off(light_type=yeelight.LightType.Main)
+            self.set_all_power(state)
