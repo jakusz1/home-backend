@@ -53,7 +53,7 @@ class LightRepository:
         proc = []
         for light_name, light in self.lights.items():
             if isinstance(light, YeeLight):
-                p = Process(target=light.set_scene, args=(scene.get(light_name),))
+                p = Process(target=light.set_scene_with_retry, args=(scene.get(light_name),))
                 p.start()
                 proc.append(p)
         for light_name, light in self.lights.items():

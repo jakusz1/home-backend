@@ -92,3 +92,10 @@ class YeeLight(Light):
         except yeelight.BulbException:
             sleep(1)
             self.set_all_power(state)
+
+    def set_scene_with_retry(self, scene):
+        try:
+            self.set_scene(scene)
+        except yeelight.BulbException:
+            sleep(1)
+            self.set_scene(scene)
