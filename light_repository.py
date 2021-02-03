@@ -50,22 +50,20 @@ class LightRepository:
 
     def set_scene(self, scene_name):
         scene = toml.load(f"scenes/{scene_name}.toml")
+        proc = []
         for light_name, light in self.lights.items():
-            light_data = scene.get(light_name)
-            light.set_power(light_data.get("power_mode"))
-            if light_data.get("power_mode"):
-                if light_data.get("color_mode"):
-                    light.set_rgb_and_brightness(light_data.get("red"),
-                                                 light_data.get("green"),
-                                                 light_data.get("blue"),
-                                                 light_data.get("brightness"))
-                else:
-                    light.set_ct_and_brightness(light_data.get("ct"), light_data.get("brightness"))
-            if light.second_light:
-                second_light_data = light_data.get("second_light")
-                light.set_second_power(second_light_data.get("power_mode"))
-                if second_light_data.get("power_mode"):
-                    light.set_second_rgb_and_brightness(second_light_data.get("red"),
-                                                        second_light_data.get("green"),
-                                                        second_light_data.get("blue"),
-                                                        second_light_data.get("brightness"))
+            if isinstance(light, YeeLight):
+                p = Process(target=light.set_scene, args=(scene.get(light_name),))
+                p.start()
+                proc.append(p)
+        for light_name, light in self.lights.items():
+            if isinstance(light, TuyaLight):
+                light.set_scene(scene.get(light_name))
+        for p in proc:
+            p.join()
+        for light in self.lights.values():
+            try:
+                light.update()
+            except yeelight.BulbException:
+                pass
+        return self.get_info()

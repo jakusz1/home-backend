@@ -38,6 +38,25 @@ class Light:
     def switch_second_power(self):
         pass
 
+    def set_scene(self, scene):
+        self.set_power(scene.get("power_mode"))
+        if scene.get("power_mode"):
+            if scene.get("color_mode"):
+                self.set_rgb_and_brightness(scene.get("red"),
+                                            scene.get("green"),
+                                            scene.get("blue"),
+                                            scene.get("brightness"))
+            else:
+                self.set_ct_and_brightness(scene.get("ct"), scene.get("brightness"))
+        if self.second_light:
+            second_light_data = scene.get("second_light")
+            self.set_second_power(second_light_data.get("power_mode"))
+            if second_light_data.get("power_mode"):
+                self.set_second_rgb_and_brightness(second_light_data.get("red"),
+                                                   second_light_data.get("green"),
+                                                   second_light_data.get("blue"),
+                                                   second_light_data.get("brightness"))
+
     def get_info(self):
         return {
             'red': self.red,
