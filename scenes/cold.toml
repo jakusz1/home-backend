@@ -20,10 +20,7 @@ color_mode = false
 power_mode = true
 
 [bed]
-brightness = 100
-ct = 6500
-color_mode = false
-power_mode = true
+power_mode = false
 
 [kitchen]
 brightness = 100

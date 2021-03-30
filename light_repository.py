@@ -31,25 +31,20 @@ class LightRepository:
 
     def set_all_power(self, state):
         proc = []
-        for light in self.lights.values():
-            if light.power_mode != state:
-                if isinstance(light, YeeLight):
-                    p = Process(target=light.set_all_power_with_retry, args=(state,))
-                    p.start()
-                    proc.append(p)
+        for light_name, light in self.lights.items():
+            if isinstance(light, YeeLight):
+                p = Process(target=light.set_all_power_with_retry, args=(state, light_name, self.return_dict))
+                p.start()
+                proc.append(p)
         for light in self.lights.values():
             if light.power_mode != state:
                 if isinstance(light, TuyaLight):
                     light.set_power(state)
         for p in proc:
             p.join()
-        for light in self.lights.values():
-            if light.power_mode != state:
-                if isinstance(light, YeeLight):
-                    try:
-                        light.update()
-                    except yeelight.BulbException:
-                        pass
+        for light_name, light in self.lights.items():
+            if isinstance(light, YeeLight):
+                light.update_info(self.return_dict[light_name])
         return self.get_info()
 
     def set_scene(self, scene_name):

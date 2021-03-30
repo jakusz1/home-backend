@@ -29,12 +29,7 @@ color_mode = true
 power_mode = true
 
 [bed]
-red = 255
-green = 0
-blue = 255
-brightness = 100
-color_mode = true
-power_mode = true
+power_mode = false
 
 [kitchen]
 red = 255

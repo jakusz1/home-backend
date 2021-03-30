@@ -87,12 +87,13 @@ class YeeLight(Light):
             else:
                 self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
 
-    def set_all_power_with_retry(self, state):
+    def set_all_power_with_retry(self, state, light_name, return_dict):
         try:
             self.set_all_power(state)
         except yeelight.BulbException:
             sleep(1)
             self.set_all_power(state)
+        return_dict[light_name] = self.get_info()
 
     def set_scene_with_retry(self, scene, light_name, return_dict):
         try:
