@@ -4,7 +4,6 @@ import toml
 
 import yeelight
 
-from app import app
 from common import singleton
 from lights.tuya_light import TuyaLight
 from lights.yee_light import YeeLight
@@ -66,6 +65,6 @@ class LightRepository:
         for p in proc:
             p.join()
         essa = self.queue.get()
-        app.logger.info(essa)
+        print(essa)
         self.lights.update(essa)
         return self.get_info()
