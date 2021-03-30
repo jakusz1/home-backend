@@ -64,11 +64,12 @@ class LightRepository:
         for light_name, light in self.lights.items():
             if isinstance(light, TuyaLight):
                 light.set_scene(scene.get(light_name))
+
+        logger.info(return_dict)
+        self.lights.update(return_dict)
+        logger.info("after update")
         logger.info("before join")
         for p in proc:
             p.join()
         logger.info("after join")
-        logger.info(return_dict)
-        self.lights.update(return_dict)
-        logger.info("after update")
         return self.get_info()
