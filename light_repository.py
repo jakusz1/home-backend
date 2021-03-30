@@ -70,5 +70,6 @@ class LightRepository:
         logger.info("after join")
         essa = self.queue.get()
         logger.info(essa)
-        self.lights.update(essa)
+        for e in essa:
+            self.lights[e[0]] = e[1]
         return self.get_info()

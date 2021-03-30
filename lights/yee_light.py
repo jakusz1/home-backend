@@ -100,6 +100,4 @@ class YeeLight(Light):
             sleep(1)
             self.set_scene(scene)
 
-        ret = queue.get()
-        ret[light_name] = self
-        queue.put(ret)
+        queue.put((light_name, self))
