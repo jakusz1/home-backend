@@ -53,7 +53,7 @@ class LightRepository:
         return self.get_info()
 
     def set_scene(self, scene_name):
-        return_dict = self.manager.dict(self.lights)
+        return_dict = self.manager.dict()
         logger.info("set scene start")
         scene = toml.load(f"scenes/{scene_name}.toml")
         proc = []
@@ -65,12 +65,13 @@ class LightRepository:
         for light_name, light in self.lights.items():
             if isinstance(light, TuyaLight):
                 light.set_scene(scene.get(light_name))
-
         logger.info(return_dict)
-        self.lights.update(return_dict)
-        logger.info("after update")
         logger.info("before join")
         for p in proc:
             p.join()
         logger.info("after join")
-        return self.get_info()
+        result = dict(return_dict)
+        for light_name, light in self.lights.items():
+            if isinstance(light, TuyaLight):
+                result[light_name] = light.get_info()
+        return result
