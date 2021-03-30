@@ -21,7 +21,7 @@ class LightRepository:
                 self.lights[light['name']] = YeeLight(light['device_data'])
             elif light['type'] == 'tuya':
                 self.lights[light['name']] = TuyaLight(light['device_data'])
-        self.manager = multiprocessing.Manager()
+        self.return_dict = multiprocessing.Manager().dict()
 
     def get_light_by_name(self, name):
         return self.lights[name]
@@ -53,25 +53,19 @@ class LightRepository:
         return self.get_info()
 
     def set_scene(self, scene_name):
-        return_dict = self.manager.dict()
-        logger.info("set scene start")
         scene = toml.load(f"scenes/{scene_name}.toml")
         proc = []
         for light_name, light in self.lights.items():
             if isinstance(light, YeeLight):
-                p = Process(target=light.set_scene_with_retry, args=(scene.get(light_name), light_name, return_dict))
+                p = Process(target=light.set_scene_with_retry, args=(scene.get(light_name), light_name, self.return_dict))
                 p.start()
                 proc.append(p)
         for light_name, light in self.lights.items():
             if isinstance(light, TuyaLight):
                 light.set_scene(scene.get(light_name))
-        logger.info(return_dict)
-        logger.info("before join")
         for p in proc:
             p.join()
-        logger.info("after join")
-        result = dict(return_dict)
         for light_name, light in self.lights.items():
-            if isinstance(light, TuyaLight):
-                result[light_name] = light.get_info()
-        return result
+            if isinstance(light, YeeLight):
+                light.update_info(self.return_dict[light_name])
+        return self.get_info()

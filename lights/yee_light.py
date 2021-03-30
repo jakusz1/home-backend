@@ -100,5 +100,4 @@ class YeeLight(Light):
         except yeelight.BulbException:
             sleep(1)
             self.set_scene(scene)
-        logger.info(self.get_info())
         return_dict[light_name] = self.get_info()
