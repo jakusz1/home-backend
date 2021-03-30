@@ -9,7 +9,7 @@ class TuyaLight(Light):
 
     def __init__(self, device_data):
         super().__init__()
-        self.device_data = device_data
+        self.device_data = dict(device_data)
         self.client = TuyaClient(device_data)
         self.client.start()
         self.update()
