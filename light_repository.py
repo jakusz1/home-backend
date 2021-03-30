@@ -21,6 +21,7 @@ class LightRepository:
                 self.lights[light['name']] = YeeLight(light['device_data'])
             elif light['type'] == 'tuya':
                 self.lights[light['name']] = TuyaLight(light['device_data'])
+        self.manager = multiprocessing.Manager()
 
     def get_light_by_name(self, name):
         return self.lights[name]
@@ -52,7 +53,7 @@ class LightRepository:
         return self.get_info()
 
     def set_scene(self, scene_name):
-        return_dict = multiprocessing.Manager().dict()
+        return_dict = self.manager.dict(self.lights)
         logger.info("set scene start")
         scene = toml.load(f"scenes/{scene_name}.toml")
         proc = []

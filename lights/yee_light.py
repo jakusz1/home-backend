@@ -1,6 +1,7 @@
 from time import sleep
 
 import yeelight
+from logger import logger
 
 from lights.light import Light
 
@@ -99,5 +100,5 @@ class YeeLight(Light):
         except yeelight.BulbException:
             sleep(1)
             self.set_scene(scene)
-
+        logger.info(self)
         return_dict[light_name] = self
