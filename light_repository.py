@@ -1,3 +1,5 @@
+import multiprocessing
+
 import toml
 
 import yeelight
@@ -18,6 +20,7 @@ class LightRepository:
                 self.lights[light['name']] = YeeLight(light['device_data'])
             elif light['type'] == 'tuya':
                 self.lights[light['name']] = TuyaLight(light['device_data'])
+        self.queue = multiprocessing.Queue()
 
     def get_light_by_name(self, name):
         return self.lights[name]
@@ -53,7 +56,7 @@ class LightRepository:
         proc = []
         for light_name, light in self.lights.items():
             if isinstance(light, YeeLight):
-                p = Process(target=light.set_scene_with_retry, args=(scene.get(light_name),))
+                p = Process(target=light.set_scene_with_retry, args=(scene.get(light_name), light_name, self.queue))
                 p.start()
                 proc.append(p)
         for light_name, light in self.lights.items():
@@ -61,9 +64,5 @@ class LightRepository:
                 light.set_scene(scene.get(light_name))
         for p in proc:
             p.join()
-        for light in self.lights.values():
-            try:
-                light.update()
-            except yeelight.BulbException:
-                pass
+        self.lights.update(self.queue.get())
         return self.get_info()
