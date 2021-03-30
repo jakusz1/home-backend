@@ -93,11 +93,11 @@ class YeeLight(Light):
             sleep(1)
             self.set_all_power(state)
 
-    def set_scene_with_retry(self, scene, light_name, queue):
+    def set_scene_with_retry(self, scene, light_name, return_dict):
         try:
             self.set_scene(scene)
         except yeelight.BulbException:
             sleep(1)
             self.set_scene(scene)
 
-        queue.put((light_name, self))
+        return_dict[light_name] = self
