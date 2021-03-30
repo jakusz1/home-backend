@@ -1,4 +1,5 @@
 import multiprocessing
+from logger import logger
 
 import toml
 
@@ -52,6 +53,7 @@ class LightRepository:
         return self.get_info()
 
     def set_scene(self, scene_name):
+        logger.info("set scene start")
         scene = toml.load(f"scenes/{scene_name}.toml")
         proc = []
         for light_name, light in self.lights.items():
@@ -62,9 +64,11 @@ class LightRepository:
         for light_name, light in self.lights.items():
             if isinstance(light, TuyaLight):
                 light.set_scene(scene.get(light_name))
+        logger.info("before join")
         for p in proc:
             p.join()
+        logger.info("after join")
         essa = self.queue.get()
-        print(essa)
+        logger.info(essa)
         self.lights.update(essa)
         return self.get_info()

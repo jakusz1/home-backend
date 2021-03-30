@@ -11,3 +11,5 @@ tlv8
 toml
 tuyaface
 yeelight
+aiohttp
+logger
