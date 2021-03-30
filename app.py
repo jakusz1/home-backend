@@ -3,7 +3,7 @@ import json
 from time import sleep
 from traceback import format_exc
 
-from flask import Flask, request, Response, redirect, url_for, send_from_directory, send_file
+from flask import Flask, request, Response, send_file
 
 import smart_things
 from ir_denon import IrDenon

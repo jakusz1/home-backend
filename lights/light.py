@@ -68,3 +68,14 @@ class Light:
             'power_mode': self.power_mode,
             'second_light': self.second_light.get_info() if self.second_light else None
         }
+
+    def update_info(self, json):
+        self.red = json['red']
+        self.green = json['green']
+        self.blue = json['blue']
+        self.brightness = json['brightness']
+        self.ct = json['ct']
+        self.color_mode = json['color_mode']
+        self.power_mode = json['power_mode']
+        if self.second_light:
+            self.second_light.update_info(json['second_light'])

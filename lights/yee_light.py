@@ -1,6 +1,7 @@
 from time import sleep
 
 import yeelight
+from logger import logger
 
 from lights.light import Light
 
@@ -9,7 +10,7 @@ class YeeLight(Light):
 
     def __init__(self, device_data):
         super().__init__()
-        self.device_data = device_data
+        self.device_data = dict(device_data)
         self.bulb = yeelight.Bulb(device_data['ip'], model=device_data['model'])
         if self.bulb.model == "ceiling4":
             self.second_light = Light()
@@ -93,9 +94,10 @@ class YeeLight(Light):
             sleep(1)
             self.set_all_power(state)
 
-    def set_scene_with_retry(self, scene):
+    def set_scene_with_retry(self, scene, light_name, return_dict):
         try:
             self.set_scene(scene)
         except yeelight.BulbException:
             sleep(1)
             self.set_scene(scene)
+        return_dict[light_name] = self.get_info()
