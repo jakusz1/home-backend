@@ -29,7 +29,7 @@ class LightRepository:
     def get_info(self):
         return {k: v.get_info() for k, v in self.lights.items()}
 
-    def set_all_power(self, state):
+    def set_power(self, state):
         proc = []
         for light_name, light in self.lights.items():
             if isinstance(light, YeeLight):

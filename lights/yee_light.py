@@ -86,6 +86,7 @@ class YeeLight(Light):
                 self.bulb.turn_on(light_type=yeelight.LightType.Ambient)
             else:
                 self.bulb.turn_off(light_type=yeelight.LightType.Ambient)
+        return self.update()
 
     def set_all_power_with_retry(self, state, light_name, return_dict):
         try:

@@ -141,9 +141,9 @@ def lights():
     if request.method == 'GET':
         return Response(json.dumps(LightRepository().get_info()), status=200, mimetype='application/json')
     elif request.method == 'POST':
-        return Response(json.dumps(LightRepository().set_all_power(True)), status=200, mimetype='application/json')
+        return Response(json.dumps(LightRepository().set_power(True)), status=200, mimetype='application/json')
     elif request.method == 'DELETE':
-        return Response(json.dumps(LightRepository().set_all_power(False)), status=200, mimetype='application/json')
+        return Response(json.dumps(LightRepository().set_power(False)), status=200, mimetype='application/json')
 
 
 @app.route('/api/v2/lights/<light_name>', methods=['GET'])
