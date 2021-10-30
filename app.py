@@ -8,6 +8,7 @@ from flask import Flask, request, Response, send_file
 import smart_things
 from ir_denon import IrDenon
 from light_repository import LightRepository
+from projector import Projector
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
 
@@ -150,6 +151,16 @@ def lights():
 def light(light_name):
     return Response(json.dumps(LightRepository().get_light_by_name(light_name).get_info()), status=200,
                     mimetype='application/json')
+
+
+@app.route('/api/v2/projector', methods=['GET'])
+def projector_power():
+    return Response(json.dumps(Projector.switch_power()), status=200, mimetype='application/json')
+
+
+@app.route('/api/v2/projector', methods=['POST'])
+def projector_power():
+    return Response(json.dumps(Projector.update()), status=200, mimetype='application/json')
 
 
 if __name__ == '__main__':
