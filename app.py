@@ -153,14 +153,12 @@ def light(light_name):
                     mimetype='application/json')
 
 
-@app.route('/api/v2/projector', methods=['GET'])
+@app.route('/api/v2/projector', methods=['GET', 'POST'])
 def projector_power():
-    return Response(json.dumps(Projector.switch_power()), status=200, mimetype='application/json')
-
-
-@app.route('/api/v2/projector', methods=['POST'])
-def projector_power():
-    return Response(json.dumps(Projector.update()), status=200, mimetype='application/json')
+    if request.method == 'GET':
+        return Response(json.dumps(Projector.switch_power()), status=200, mimetype='application/json')
+    elif request.method == 'POST':
+        return Response(json.dumps(Projector.update()), status=200, mimetype='application/json')
 
 
 if __name__ == '__main__':
