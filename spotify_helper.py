@@ -20,6 +20,8 @@ class SpotifyHelper:
         self.response = None
         self.online_devices = []
         self.current_album = None
+        self.last_best_rgb = None
+        self.last_album_id = None
 
     def _get_header(self):
         return {'authorization': f'Bearer {self.access_token}'}
@@ -43,13 +45,15 @@ class SpotifyHelper:
 
         currently_playing_request = requests.request(
             "GET", self.config['currently_playing_url'], headers=self._get_header()).content
-
         currently_played_album = json.loads(currently_playing_request)['item']['album']
-        self.save_album(currently_played_album['images'][0]['url'])
-        best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
-        if not best_rgb:
-            best_rgb = self.config['default_color']
-        return best_rgb
+        if currently_played_album['id'] != self.last_album_id:
+            self.save_album(currently_played_album['images'][0]['url'])
+            best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
+            if not best_rgb:
+                best_rgb = self.config['default_color']
+            self.last_album_id = currently_played_album['id']
+            self.last_best_rgb = best_rgb
+        return self.last_best_rgb
 
     def _refresh_devices(self):
         self._refresh_access_token()
