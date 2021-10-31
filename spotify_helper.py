@@ -1,11 +1,8 @@
 import json
-import http
-import os
 import time
-import threading
-import toml
+
 import requests
-import yeelight
+import toml
 
 from analyzer import get_color_from_album_url
 from common import singleton
@@ -45,21 +42,22 @@ class SpotifyHelper:
 
         currently_playing_request = requests.request(
             "GET", self.config['currently_playing_url'], headers=self._get_header()).content
-        currently_played_album = json.loads(currently_playing_request)['item']['album']
-        if currently_played_album['id'] != self.last_album_id:
-            self.save_album(currently_played_album['images'][0]['url'])
-            best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
-            if not best_rgb:
-                best_rgb = self.config['default_color']
-            self.last_album_id = currently_played_album['id']
-            self.last_best_rgb = best_rgb
+        if currently_playing_request:
+            currently_played_album = json.loads(currently_playing_request)['item']['album']
+            if currently_played_album['id'] != self.last_album_id:
+                self.save_album(currently_played_album['images'][0]['url'])
+                best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
+                if not best_rgb:
+                    best_rgb = self.config['default_color']
+                self.last_album_id = currently_played_album['id']
+                self.last_best_rgb = best_rgb
         return self.last_best_rgb
 
     def _refresh_devices(self):
         self._refresh_access_token()
 
-        self.online_devices = \
-        json.loads(requests.request("GET", f"{self.config['player_url']}/devices", headers=self._get_header()).content)[
+        self.online_devices = json.loads(
+            requests.request("GET", f"{self.config['player_url']}/devices", headers=self._get_header()).content)[
             'devices']
 
     def _get_device_id_by_name(self, name):
