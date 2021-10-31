@@ -1,5 +1,6 @@
 import json
 import http
+import os
 import time
 import threading
 import toml
@@ -43,6 +44,7 @@ class SpotifyHelper:
             "GET", self.config['currently_playing_url'], headers=self._get_header()).content
 
         currently_played_album = json.loads(currently_playing_request)['item']['album']
+        self.save_album(currently_played_album['images'][0]['url'])
         best_rgb = get_color_from_album_url(currently_played_album['images'][-1]['url'])
         if not best_rgb:
             best_rgb = self.config['default_color']
@@ -90,6 +92,10 @@ class SpotifyHelper:
 
     def previous(self, device_name=None):
         return self._call_player_api("POST", f"{self.config['player_url']}/previous", device_name)
+
+    def save_album(self, url):
+        r = requests.request("GET", url, headers=self._get_header())
+        open(os.path.join("web", "album.jpg"), 'wb').write(r.content)
 
 
 class SpotiLightException(Exception):
