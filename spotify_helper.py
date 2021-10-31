@@ -19,6 +19,7 @@ class SpotifyHelper:
         self.access_token_get_time = None
         self.response = None
         self.online_devices = []
+        self.current_album = None
 
     def _get_header(self):
         return {'authorization': f'Bearer {self.access_token}'}
@@ -94,8 +95,7 @@ class SpotifyHelper:
         return self._call_player_api("POST", f"{self.config['player_url']}/previous", device_name)
 
     def save_album(self, url):
-        r = requests.request("GET", url, headers=self._get_header())
-        open(os.path.join("web", "album.jpg"), 'wb').write(r.content)
+        self.current_album = requests.request("GET", url, headers=self._get_header()).content
 
 
 class SpotiLightException(Exception):

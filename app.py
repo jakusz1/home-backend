@@ -34,6 +34,11 @@ def get_spotify():
                         mimetype='application/json')
 
 
+@app.route('/api/v2/spotify/album', methods=['GET'])
+def get_spotify_album():
+    return Response(SpotifyHelper().current_album, status=200, mimetype='image/jpeg')
+
+
 @app.route('/api/v2/denon', methods=['GET'])
 def get_denon():
     return Response(json.dumps(IrDenon().get_info()), status=200, mimetype='application/json')
