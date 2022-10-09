@@ -19,8 +19,17 @@ ct = 3200
 color_mode = false
 power_mode = true
 
+[desk2]
+brightness = 100
+ct = 3200
+color_mode = false
+power_mode = true
+
 [bed]
-power_mode = false
+brightness = 100
+ct = 2500
+color_mode = false
+power_mode = true
 
 [kitchen]
 brightness = 100

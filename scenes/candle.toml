@@ -29,6 +29,14 @@ brightness = 100
 color_mode = true
 power_mode = true
 
+[desk2]
+red = 255
+green = 100
+blue = 0
+brightness = 100
+color_mode = true
+power_mode = true
+
 [kitchen]
 red = 255
 green = 123

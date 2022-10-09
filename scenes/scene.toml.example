@@ -32,6 +32,15 @@ ct = 1700
 color_mode = true
 power_mode = true
 
+[desk2]
+red = 0
+green = 135
+blue = 255
+brightness = 100
+ct = 1700
+color_mode = true
+power_mode = false
+
 [bed]
 red = 0
 green = 135

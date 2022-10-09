@@ -25,6 +25,14 @@ brightness = 100
 color_mode = true
 power_mode = true
 
+[desk2]
+red = 255
+green = 0
+blue = 0
+brightness = 100
+color_mode = true
+power_mode = true
+
 [bed]
 red = 255
 green = 0

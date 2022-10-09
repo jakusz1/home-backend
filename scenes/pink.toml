@@ -28,8 +28,21 @@ brightness = 100
 color_mode = true
 power_mode = true
 
+[desk2]
+red = 255
+green = 0
+blue = 255
+brightness = 100
+color_mode = true
+power_mode = true
+
 [bed]
-power_mode = false
+red = 255
+green = 0
+blue = 165
+brightness = 100
+color_mode = true
+power_mode = true
 
 [kitchen]
 red = 255
