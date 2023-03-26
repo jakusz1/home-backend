@@ -1,6 +1,6 @@
 import colorsys
 
-from tuyaface.tuyaclient import TuyaClient
+from tinytuya import BulbDevice
 
 from lights.light import Light
 
@@ -10,31 +10,26 @@ class TuyaLight(Light):
     def __init__(self, device_data):
         super().__init__()
         self.device_data = dict(device_data)
-        self.client = TuyaClient(device_data)
-        self.client.start()
+        self.client = BulbDevice(device_data['deviceid'], device_data['ip'], device_data['localkey'])
+        self.client.set_version(device_data['protocol'])
         self.update()
 
-    def __del__(self):
-        self.client.stop_client()
-
     def set_rgb_and_brightness(self, r, g, b, br):
-        self.client.set_state(self.rgb_brightness_to_tuya_hsv(r, g, b, br), 24)
-        self.client.set_state("colour", 21)
-
+        self.client.set_multiple_values({21: "colour",
+                                         24: self.rgb_brightness_to_tuya_hsv(r, g, b, br)})
         return self.update()
 
     def set_ct_and_brightness(self, kelvins, br):
-        self.client.set_state(br * 10, 22)
-        self.client.set_state(self.ct_to_tuya_ct(kelvins), 23)
-        self.client.set_state("white", 21)
-
+        self.client.set_multiple_values({21: "white",
+                                         22: br * 10,
+                                         23: self.ct_to_tuya_ct(kelvins)})
         return self.update()
 
     def switch_power(self):
         return self.set_power(not self.power_mode)
 
     def set_power(self, state):
-        self.client.set_state(state, 20)
+        self.client.set_value(20, state)
         return self.update()
 
     def update(self):

@@ -9,8 +9,8 @@ scikit-learn
 scipy
 tlv8
 toml
-tuyaface
 yeelight
 aiohttp
 logger
 APScheduler
+tinytuya
