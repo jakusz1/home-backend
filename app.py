@@ -1,16 +1,31 @@
 import asyncio
 import json
+from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep
 from traceback import format_exc
 
 from flask import Flask, request, Response, send_file
+from logger import logger
 
 import smart_things
 from ir_denon import IrDenon
 from light_repository import LightRepository
-from projector import Projector
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
+
+
+def bed_lamp_hotfix():
+    bed_lamp = LightRepository().get_light_by_name("bed")
+    if not bed_lamp.power_mode:
+        bed_lamp.update()
+        if bed_lamp.power_mode:
+            bed_lamp.set_power(False)
+            logger.info("Bed lamp power hotfix applied")
+
+
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(bed_lamp_hotfix, 'interval', minutes=10)
+scheduler.start()
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__,
@@ -104,8 +119,10 @@ def smart_tv_app(app_name, action):
 
 @app.route('/api/v2/lights/<light_name>/<action>', methods=['POST'])
 def action_light(light_name, action):
+    light = LightRepository().get_light_by_name(light_name)
+    if not light:
+        return Response(status=404, mimetype='application/json')
     try:
-        light = LightRepository().get_light_by_name(light_name)
         if action == "switch":
             light.switch_power()
         elif action == "on":
@@ -127,10 +144,10 @@ def action_light(light_name, action):
             light.set_ct_and_brightness(data['ct'], data['br'])
         else:
             return Response(status=400, mimetype='application/json')
-        return Response(json.dumps(light.get_info()), status=200, mimetype='application/json')
     except Exception as error:
         return Response(f'{{"error": "{repr(error)}", "traceback": "{format_exc()}"}}', status=500,
                         mimetype='application/json')
+    return Response(json.dumps(light.get_info()), status=200, mimetype='application/json')
 
 
 @app.route('/api/v2/scene/<scene>', methods=['POST'])
@@ -143,7 +160,7 @@ def set_scene(scene):
 
 
 @app.route('/api/v2/lights', methods=['GET', 'POST', 'DELETE'])
-def lights():
+def bulk_actions_lights():
     if request.method == 'GET':
         return Response(json.dumps(LightRepository().get_info()), status=200, mimetype='application/json')
     elif request.method == 'POST':
@@ -153,17 +170,17 @@ def lights():
 
 
 @app.route('/api/v2/lights/<light_name>', methods=['GET'])
-def light(light_name):
-    return Response(json.dumps(LightRepository().get_light_by_name(light_name).get_info()), status=200,
-                    mimetype='application/json')
+def light_info(light_name):
+    light = LightRepository().get_light_by_name(light_name)
+    if light:
+        return Response(json.dumps(light.get_info()), status=200, mimetype='application/json')
+    else:
+        return Response(status=404, mimetype='application/json')
 
 
 @app.route('/api/v2/projector', methods=['GET', 'POST'])
 def projector_power():
-    if request.method == 'GET':
-        return Response(json.dumps(Projector.switch_power()), status=200, mimetype='application/json')
-    elif request.method == 'POST':
-        return Response(json.dumps(Projector.update()), status=200, mimetype='application/json')
+    return Response(status=404, mimetype='application/json')
 
 
 if __name__ == '__main__':

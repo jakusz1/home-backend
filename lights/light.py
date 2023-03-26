@@ -5,7 +5,7 @@ class Light:
     brightness = 100
     ct = 4000
     color_mode = True
-    power_mode = True
+    power_mode = False
     second_light = None
 
     def __init__(self):

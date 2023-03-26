@@ -3,8 +3,6 @@ from logger import logger
 
 import toml
 
-import yeelight
-
 from common import singleton
 from lights.tuya_light import TuyaLight
 from lights.yee_light import YeeLight
@@ -17,14 +15,17 @@ class LightRepository:
         self.config = toml.load("config.toml")
         self.lights = {}
         for light in self.config['light']:
-            if light['type'] == 'yee':
-                self.lights[light['name']] = YeeLight(light['device_data'])
-            elif light['type'] == 'tuya':
-                self.lights[light['name']] = TuyaLight(light['device_data'])
+            try:
+                if light['type'] == 'yee':
+                    self.lights[light['name']] = YeeLight(light['device_data'])
+                elif light['type'] == 'tuya':
+                    self.lights[light['name']] = TuyaLight(light['device_data'])
+            except Exception as error:
+                logger.warning(f"{light['device_data']['name']} not connected: {error}")
         self.return_dict = multiprocessing.Manager().dict()
 
     def get_light_by_name(self, name):
-        return self.lights[name]
+        return self.lights.get(name, None)
 
     def get_info(self):
         return {k: v.get_info() for k, v in self.lights.items()}

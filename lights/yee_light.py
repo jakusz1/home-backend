@@ -1,7 +1,6 @@
 from time import sleep
 
 import yeelight
-from logger import logger
 
 from lights.light import Light
 
