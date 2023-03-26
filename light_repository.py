@@ -21,7 +21,7 @@ class LightRepository:
                 elif light['type'] == 'tuya':
                     self.lights[light['name']] = TuyaLight(light['device_data'])
             except Exception as error:
-                logger.warning(f"{light['name']} not connected: {error}")
+                logger.warning(f"{light['name']} not connected: {repr(error)}")
         self.return_dict = multiprocessing.Manager().dict()
 
     def get_light_by_name(self, name):
