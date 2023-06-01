@@ -12,8 +12,11 @@ class TuyaLight(Light):
         super().__init__()
         self.device_data = dict(device_data)
         self.client = TuyaClient(device_data, on_connection=self.on_connection)
-        self.client.start()
-        self.update()
+        try:
+            self.client.start()
+            self.update()
+        except Exception:
+            pass
 
     def __del__(self):
         self.client.stop_client()
