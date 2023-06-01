@@ -1,4 +1,5 @@
 import colorsys
+import time
 
 from tuyaface.tuyaclient import TuyaClient
 
@@ -10,7 +11,7 @@ class TuyaLight(Light):
     def __init__(self, device_data):
         super().__init__()
         self.device_data = dict(device_data)
-        self.client = TuyaClient(device_data)
+        self.client = TuyaClient(device_data, on_connection=self.on_connection)
         self.client.start()
         self.update()
 
@@ -36,6 +37,10 @@ class TuyaLight(Light):
     def set_power(self, state):
         self.client.set_state(state, 20)
         return self.update()
+
+    def on_connection(self, value):
+        if value:
+            self.set_power(False)
 
     def update(self):
         data = self.client.status()['dps']
