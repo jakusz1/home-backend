@@ -40,7 +40,7 @@ class TuyaLight(Light):
 
     def on_connection(self, value):
         if value:
-            self.set_power(False)
+            self.client.set_state(False, 20)
 
     def update(self):
         data = self.client.status()['dps']
