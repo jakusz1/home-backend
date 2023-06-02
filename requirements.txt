@@ -13,4 +13,3 @@ tuyaface
 yeelight
 aiohttp
 logger
-APScheduler
