@@ -1,6 +1,5 @@
 import asyncio
 import json
-from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep
 from traceback import format_exc
 
