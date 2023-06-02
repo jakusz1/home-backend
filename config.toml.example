@@ -23,4 +23,4 @@ device_data = { 'ip' = '', 'model' = '' }
 [[light]]
 name = ''
 type = 'tuya'
-device_data = { 'protocol' = '3.3', 'deviceid' = '', 'localkey' = '', 'ip' = '' }
+device_data = { 'protocol' = '3.3', 'deviceid' = '', 'localkey' = '', 'ip' = '', 'switch_off_on_connection' = true }
