@@ -1,11 +1,9 @@
 import asyncio
 import json
-from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep
 from traceback import format_exc
 
 from flask import Flask, request, Response, send_file
-from logger import logger
 
 import smart_things
 from ir_denon import IrDenon
@@ -13,19 +11,6 @@ from light_repository import LightRepository
 from smart_tv import SmartTv
 from spotify_helper import SpotifyHelper, SpotiLightException
 
-
-def bed_lamp_hotfix():
-    bed_lamp = LightRepository().get_light_by_name("bed")
-    if not bed_lamp.power_mode:
-        bed_lamp.update()
-        if bed_lamp.power_mode:
-            bed_lamp.set_power(False)
-            logger.info("Bed lamp power hotfix applied")
-
-
-scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(bed_lamp_hotfix, 'interval', minutes=10)
-scheduler.start()
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__,
